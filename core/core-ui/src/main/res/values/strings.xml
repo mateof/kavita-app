@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kavita</string>
+
+    <!-- Common -->
+    <string name="back">Volver</string>
+    <string name="retry">Reintentar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="delete">Eliminar</string>
+    <string name="search">Buscar</string>
+    <string name="clear">Limpiar</string>
+    <string name="loading">Cargando…</string>
+    <string name="error_generic">Error: %s</string>
+    <string name="collapse">Contraer</string>
+    <string name="expand">Expandir</string>
+    <string name="pages_format">%d paginas</string>
+    <string name="validated">Validado</string>
+
+    <!-- Auth -->
+    <string name="connect_to_server">Conecta con tu servidor</string>
+    <string name="server_url">URL del servidor</string>
+    <string name="server_url_placeholder">https://kavita.example.com</string>
+    <string name="check_connection">Comprobar conexion</string>
+    <string name="username">Usuario</string>
+    <string name="password">Contrasena</string>
+    <string name="show_password">Mostrar contrasena</string>
+    <string name="hide_password">Ocultar contrasena</string>
+    <string name="login">Iniciar sesion</string>
+    <string name="connect">Conectar</string>
+    <string name="manage_servers">Gestionar servidores</string>
+    <string name="servers">Servidores</string>
+    <string name="add_server">Anadir servidor</string>
+    <string name="no_servers">No hay servidores configurados</string>
+
+    <!-- Home -->
+    <string name="continue_reading">Continuar leyendo</string>
+    <string name="on_deck">A continuacion</string>
+    <string name="recently_updated">Series actualizadas recientemente</string>
+    <string name="recently_added">Anadidos recientemente</string>
+    <string name="library_empty">Tu biblioteca esta vacia</string>
+
+    <!-- Library -->
+    <string name="all_libraries">Todas</string>
+    <string name="downloaded">Descargados</string>
+    <string name="no_downloaded_series">No hay series descargadas</string>
+    <string name="no_series_in_library">No hay series en esta biblioteca</string>
+
+    <!-- Series Detail -->
+    <string name="volumes">Volumenes</string>
+    <string name="chapters">Capitulos</string>
+    <string name="specials">Especiales</string>
+    <string name="continue_reading_btn">Continuar leyendo</string>
+    <string name="start_reading">Empezar a leer</string>
+    <string name="synopsis">Sinopsis</string>
+    <string name="author">Autor</string>
+    <string name="publisher">Editorial</string>
+    <string name="format">Formato</string>
+    <string name="year">Ano</string>
+    <string name="language">Idioma</string>
+    <string name="rating">Clasificacion</string>
+    <string name="status">Estado</string>
+    <string name="total">Total</string>
+    <string name="artist">Dibujante</string>
+    <string name="colorist">Colorista</string>
+    <string name="translator">Traductor</string>
+    <string name="cover_artist">Portadista</string>
+    <string name="genres">Generos</string>
+    <string name="tags">Etiquetas</string>
+    <string name="volume_number">Volumen %s</string>
+    <string name="chapter_label">Capitulo</string>
+    <string name="chapter_number">Capitulo %s</string>
+    <string name="special_label">Especial</string>
+    <string name="content_label">Contenido</string>
+    <string name="pages_progress">%1$d/%2$d paginas</string>
+
+    <!-- Languages -->
+    <string name="lang_spanish">Espanol</string>
+    <string name="lang_english">Ingles</string>
+    <string name="lang_french">Frances</string>
+    <string name="lang_german">Aleman</string>
+    <string name="lang_italian">Italiano</string>
+    <string name="lang_portuguese">Portugues</string>
+    <string name="lang_japanese">Japones</string>
+    <string name="lang_korean">Coreano</string>
+    <string name="lang_chinese">Chino</string>
+    <string name="lang_catalan">Catalan</string>
+    <string name="lang_galician">Gallego</string>
+    <string name="lang_basque">Euskera</string>
+
+    <!-- Format Labels -->
+    <string name="format_image">Imagen</string>
+    <string name="format_archive">CBR/CBZ</string>
+    <string name="format_epub">EPUB</string>
+    <string name="format_pdf">PDF</string>
+    <string name="format_unknown">Desconocido</string>
+
+    <!-- Search -->
+    <string name="search_series_hint">Buscar series…</string>
+    <string name="no_results">No se han encontrado resultados para \"%s\"</string>
+    <string name="search_error">Error en la busqueda: %s</string>
+
+    <!-- Downloads -->
+    <string name="downloads">Descargas</string>
+    <string name="delete_all">Eliminar todo</string>
+    <string name="no_downloads">No hay descargas</string>
+    <string name="storage_used">Almacenamiento usado: %s</string>
+    <string name="chapters_downloaded">%d capitulo descargado</string>
+    <string name="chapters_downloaded_plural">%d capitulos descargados</string>
+    <string name="chapter_id">Capitulo %d</string>
+    <string name="download_offline">Descargar para leer sin conexion</string>
+    <string name="save_to_downloads">Guardar en Descargas</string>
+    <string name="downloading_progress">Descargando… %d%%</string>
+    <string name="saved_to_downloads">Guardado en Descargas/Kavita</string>
+    <string name="delete_download">Eliminar descarga</string>
+    <string name="already_downloaded">Ya esta descargado</string>
+    <string name="download_error">Error al descargar</string>
+    <string name="export_error">Error al guardar en Descargas</string>
+    <string name="queued">En cola</string>
+    <string name="completed_format">Completado · %s</string>
+    <string name="error">Error</string>
+    <string name="cancelled">Cancelado</string>
+
+    <!-- Reader -->
+    <string name="close">Cerrar</string>
+    <string name="remove_bookmark">Quitar marcador</string>
+    <string name="add_bookmark">Anadir marcador</string>
+    <string name="reader_settings">Ajustes de lectura</string>
+    <string name="table_of_contents">Indice</string>
+    <string name="brightness">Brillo</string>
+    <string name="previous_chapter">Capitulo anterior</string>
+    <string name="next_chapter">Siguiente capitulo</string>
+    <string name="page_number">Pagina %d</string>
+
+    <!-- Reader Settings -->
+    <string name="direction">Direccion</string>
+    <string name="tap_navigation">Pasar pagina tocando</string>
+    <string name="pages_per_view">Paginas por vista</string>
+    <string name="page_fit">Ajuste de pagina</string>
+    <string name="page_transition">Efecto al pasar pagina</string>
+    <string name="dir_ltr">Izquierda a derecha</string>
+    <string name="dir_rtl">Derecha a izquierda</string>
+    <string name="dir_vertical">Vertical</string>
+    <string name="dir_webtoon">Webtoon</string>
+    <string name="dir_double">Doble pagina</string>
+    <string name="tap_lateral">Laterales</string>
+    <string name="tap_vertical">Arriba / Abajo</string>
+    <string name="tap_disabled">Desactivado</string>
+    <string name="layout_single">Una pagina</string>
+    <string name="layout_double">Dos paginas</string>
+    <string name="scale_fit_screen">Ajustar a pantalla</string>
+    <string name="scale_fit_width">Ajustar al ancho</string>
+    <string name="scale_fit_height">Ajustar al alto</string>
+    <string name="transition_slide">Deslizar</string>
+    <string name="transition_curl">Pasar hoja</string>
+    <string name="transition_fade">Fundido</string>
+    <string name="night_mode">Modo noche</string>
+
+    <!-- EPUB Settings -->
+    <string name="epub_settings">Ajustes de EPUB</string>
+    <string name="font_size">Tamano de fuente</string>
+    <string name="font_family">Fuente</string>
+    <string name="line_spacing">Interlineado</string>
+    <string name="reader_theme">Tema de lectura</string>
+    <string name="font_default">Por defecto</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_sans_serif">Sans-serif</string>
+    <string name="font_monospace">Monospace</string>
+    <string name="font_cursive">Cursiva</string>
+    <string name="font_georgia">Georgia</string>
+    <string name="font_literata">Literata</string>
+    <string name="font_opendyslexic">OpenDyslexic</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="theme_sepia">Sepia</string>
+
+    <!-- Stats -->
+    <string name="statistics">Estadisticas</string>
+    <string name="last_30_days">Ultimos 30 dias</string>
+    <string name="total_time">Tiempo total</string>
+    <string name="pages_read">Paginas leidas</string>
+    <string name="chapters_completed">Capitulos completados</string>
+    <string name="streak">Racha</string>
+    <string name="streak_days">%d dias</string>
+    <string name="current_streak">Racha actual</string>
+    <string name="best_streak">Mejor racha</string>
+    <string name="daily_goal">Objetivo diario</string>
+    <string name="daily_goal_progress">%1$d min / %2$d min</string>
+    <string name="goal_achieved">Objetivo cumplido</string>
+    <string name="goal_remaining">Faltan %d min</string>
+
+    <!-- Admin -->
+    <string name="administration">Administracion</string>
+    <string name="no_admin_permission">No tienes permisos de administrador</string>
+    <string name="libraries">Bibliotecas</string>
+    <string name="server_info">Informacion del servidor</string>
+    <string name="version_label">Version: %s</string>
+    <string name="os_label">SO: %s</string>
+    <string name="cores_label">Nucleos: %d</string>
+    <string name="running_in_docker">Ejecutandose en Docker</string>
+    <string name="scan">Escanear</string>
+    <string name="refresh_metadata">Refrescar metadatos</string>
+    <string name="users">Usuarios</string>
+    <string name="invite_user">Invitar usuario</string>
+    <string name="delete_user">Eliminar usuario</string>
+    <string name="email_label">Correo electronico</string>
+    <string name="invite">Invitar</string>
+
+    <!-- Settings -->
+    <string name="settings">Ajustes</string>
+    <string name="appearance">Apariencia</string>
+    <string name="theme">Tema</string>
+    <string name="follow_system">Seguir sistema</string>
+    <string name="light">Claro</string>
+    <string name="dark">Oscuro</string>
+    <string name="dynamic_color">Color dinamico</string>
+    <string name="dynamic_color_desc">Adaptar colores al fondo de pantalla</string>
+    <string name="reading">Lectura</string>
+    <string name="reading_direction">Direccion de lectura</string>
+    <string name="dir_rtl_manga">Derecha a izquierda (Manga)</string>
+    <string name="keep_screen_on">Mantener pantalla encendida</string>
+    <string name="daily_goal_setting">Objetivo diario de lectura</string>
+    <string name="daily_goal_minutes">%d minutos</string>
+    <string name="downloads_section">Descargas</string>
+    <string name="wifi_only">Solo por WiFi</string>
+    <string name="wifi_only_desc">Descargar solo con conexion WiFi</string>
+    <string name="servers_section">Servidores</string>
+    <string name="manage_servers_desc">Anadir, editar o eliminar servidores</string>
+    <string name="storage_section">Almacenamiento</string>
+    <string name="image_cache">Cache de imagenes</string>
+    <string name="image_cache_size">%s usados de 500 MB</string>
+    <string name="clear_cache">Limpiar</string>
+    <string name="about">Acerca de</string>
+    <string name="app_version">Version 0.1.0</string>
+    <string name="your_digital_library">Tu biblioteca digital</string>
+    <string name="collections_subtitle">Agrupaciones de series</string>
+    <string name="reading_lists_subtitle">Tus listas personalizadas</string>
+    <string name="font_size_px">%d px</string>
+
+    <!-- More Screen -->
+    <string name="stats_subtitle">Tiempo de lectura, paginas leidas</string>
+    <string name="servers_subtitle">Gestionar conexiones</string>
+    <string name="admin_subtitle">Panel de control del servidor</string>
+    <string name="settings_subtitle">Tema, lector, descargas</string>
+
+    <!-- Collections -->
+    <string name="collections">Colecciones</string>
+    <string name="no_collections">No hay colecciones</string>
+    <string name="series_count">%d series</string>
+    <string name="no_series_in_collection">No hay series en esta coleccion</string>
+
+    <!-- Reading Lists -->
+    <string name="reading_lists">Listas de lectura</string>
+    <string name="no_reading_lists">No hay listas de lectura</string>
+    <string name="items_count">%d elementos</string>
+    <string name="list_empty">La lista esta vacia</string>
+
+    <!-- Add to Collection / Reading List -->
+    <string name="add_to_collection">Anadir a coleccion</string>
+    <string name="add_to_reading_list">Anadir a lista de lectura</string>
+    <string name="create_new">Crear nueva</string>
+    <string name="new_collection_title">Nueva coleccion</string>
+    <string name="new_reading_list_title">Nueva lista de lectura</string>
+    <string name="enter_name">Introduce un nombre</string>
+    <string name="create">Crear</string>
+    <string name="added_to_collection">Anadido a la coleccion</string>
+    <string name="error_adding_to_collection">Error al anadir a la coleccion</string>
+    <string name="added_to_reading_list">Anadido a la lista de lectura</string>
+    <string name="error_adding_to_reading_list">Error al anadir a la lista</string>
+    <string name="mark_as_read">Marcar como leido</string>
+    <string name="mark_as_unread">Marcar como no leido</string>
+
+    <!-- OPDS -->
+    <string name="search_catalog_hint">Buscar en catalogo…</string>
+    <string name="no_catalog_entries">No hay entradas en este catalogo</string>
+    <string name="load_error">Error al cargar: %s</string>
+</resources>
