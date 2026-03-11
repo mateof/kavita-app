@@ -1,0 +1,28 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+build/
+bin/
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+*.log
+
+# Keystore
+licencia/
+
+# IDE
+.vscode/
+
+# Docs internas (no exponer en GitHub; ver vault Obsidian projects/kavita-app.md)
+CLAUDE_PROMPT.md
+DEVELOPMENT.md
+DEPLOYMENT.md

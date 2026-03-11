@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kavita</string>
+
+    <!-- Common -->
+    <string name="back">Back</string>
+    <string name="retry">Retry</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="search">Search</string>
+    <string name="clear">Clear</string>
+    <string name="loading">Loading…</string>
+    <string name="error_generic">Error: %s</string>
+    <string name="collapse">Collapse</string>
+    <string name="expand">Expand</string>
+    <string name="pages_format">%d pages</string>
+    <string name="validated">Validated</string>
+
+    <!-- Auth -->
+    <string name="connect_to_server">Connect to your server</string>
+    <string name="server_url">Server URL</string>
+    <string name="server_url_placeholder">https://kavita.example.com</string>
+    <string name="check_connection">Check connection</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="login">Log in</string>
+    <string name="connect">Connect</string>
+    <string name="manage_servers">Manage servers</string>
+    <string name="servers">Servers</string>
+    <string name="add_server">Add server</string>
+    <string name="no_servers">No servers configured</string>
+
+    <!-- Home -->
+    <string name="continue_reading">Continue reading</string>
+    <string name="on_deck">On deck</string>
+    <string name="recently_updated">Recently updated series</string>
+    <string name="recently_added">Recently added</string>
+    <string name="library_empty">Your library is empty</string>
+
+    <!-- Library -->
+    <string name="all_libraries">All</string>
+    <string name="downloaded">Downloaded</string>
+    <string name="no_downloaded_series">No downloaded series</string>
+    <string name="no_series_in_library">No series in this library</string>
+
+    <!-- Series Detail -->
+    <string name="volumes">Volumes</string>
+    <string name="chapters">Chapters</string>
+    <string name="specials">Specials</string>
+    <string name="continue_reading_btn">Continue reading</string>
+    <string name="start_reading">Start reading</string>
+    <string name="synopsis">Synopsis</string>
+    <string name="author">Author</string>
+    <string name="publisher">Publisher</string>
+    <string name="format">Format</string>
+    <string name="year">Year</string>
+    <string name="language">Language</string>
+    <string name="rating">Rating</string>
+    <string name="status">Status</string>
+    <string name="total">Total</string>
+    <string name="artist">Artist</string>
+    <string name="colorist">Colorist</string>
+    <string name="translator">Translator</string>
+    <string name="cover_artist">Cover artist</string>
+    <string name="genres">Genres</string>
+    <string name="tags">Tags</string>
+    <string name="volume_number">Volume %s</string>
+    <string name="chapter_label">Chapter</string>
+    <string name="chapter_number">Chapter %s</string>
+    <string name="special_label">Special</string>
+    <string name="content_label">Content</string>
+    <string name="pages_progress">%1$d/%2$d pages</string>
+
+    <!-- Languages -->
+    <string name="lang_spanish">Spanish</string>
+    <string name="lang_english">English</string>
+    <string name="lang_french">French</string>
+    <string name="lang_german">German</string>
+    <string name="lang_italian">Italian</string>
+    <string name="lang_portuguese">Portuguese</string>
+    <string name="lang_japanese">Japanese</string>
+    <string name="lang_korean">Korean</string>
+    <string name="lang_chinese">Chinese</string>
+    <string name="lang_catalan">Catalan</string>
+    <string name="lang_galician">Galician</string>
+    <string name="lang_basque">Basque</string>
+
+    <!-- Format Labels -->
+    <string name="format_image">Image</string>
+    <string name="format_archive">CBR/CBZ</string>
+    <string name="format_epub">EPUB</string>
+    <string name="format_pdf">PDF</string>
+    <string name="format_unknown">Unknown</string>
+
+    <!-- Search -->
+    <string name="search_series_hint">Search series…</string>
+    <string name="no_results">No results found for \"%s\"</string>
+    <string name="search_error">Search error: %s</string>
+
+    <!-- Downloads -->
+    <string name="downloads">Downloads</string>
+    <string name="delete_all">Delete all</string>
+    <string name="no_downloads">No downloads</string>
+    <string name="storage_used">Storage used: %s</string>
+    <string name="chapters_downloaded">%d chapter downloaded</string>
+    <string name="chapters_downloaded_plural">%d chapters downloaded</string>
+    <string name="chapter_id">Chapter %d</string>
+    <string name="download_offline">Download for offline reading</string>
+    <string name="save_to_downloads">Save to Downloads</string>
+    <string name="downloading_progress">Downloading… %d%%</string>
+    <string name="saved_to_downloads">Saved to Downloads/Kavita</string>
+    <string name="delete_download">Delete download</string>
+    <string name="already_downloaded">Already downloaded</string>
+    <string name="download_error">Download error</string>
+    <string name="export_error">Error saving to Downloads</string>
+    <string name="queued">Queued</string>
+    <string name="completed_format">Completed · %s</string>
+    <string name="error">Error</string>
+    <string name="cancelled">Cancelled</string>
+
+    <!-- Reader -->
+    <string name="close">Close</string>
+    <string name="remove_bookmark">Remove bookmark</string>
+    <string name="add_bookmark">Add bookmark</string>
+    <string name="reader_settings">Reader settings</string>
+    <string name="table_of_contents">Table of contents</string>
+    <string name="brightness">Brightness</string>
+    <string name="previous_chapter">Previous chapter</string>
+    <string name="next_chapter">Next chapter</string>
+    <string name="page_number">Page %d</string>
+
+    <!-- Reader Settings -->
+    <string name="direction">Direction</string>
+    <string name="tap_navigation">Tap to turn page</string>
+    <string name="pages_per_view">Pages per view</string>
+    <string name="page_fit">Page fit</string>
+    <string name="page_transition">Page transition effect</string>
+    <string name="dir_ltr">Left to right</string>
+    <string name="dir_rtl">Right to left</string>
+    <string name="dir_vertical">Vertical</string>
+    <string name="dir_webtoon">Webtoon</string>
+    <string name="dir_double">Double page</string>
+    <string name="tap_lateral">Lateral</string>
+    <string name="tap_vertical">Top / Bottom</string>
+    <string name="tap_disabled">Disabled</string>
+    <string name="layout_single">Single page</string>
+    <string name="layout_double">Two pages</string>
+    <string name="scale_fit_screen">Fit to screen</string>
+    <string name="scale_fit_width">Fit to width</string>
+    <string name="scale_fit_height">Fit to height</string>
+    <string name="transition_slide">Slide</string>
+    <string name="transition_curl">Page curl</string>
+    <string name="transition_fade">Fade</string>
+    <string name="night_mode">Night mode</string>
+
+    <!-- EPUB Settings -->
+    <string name="epub_settings">EPUB settings</string>
+    <string name="font_size">Font size</string>
+    <string name="font_family">Font</string>
+    <string name="line_spacing">Line spacing</string>
+    <string name="reader_theme">Reader theme</string>
+    <string name="font_default">Default</string>
+    <string name="font_serif">Serif</string>
+    <string name="font_sans_serif">Sans-serif</string>
+    <string name="font_monospace">Monospace</string>
+    <string name="font_cursive">Cursive</string>
+    <string name="font_georgia">Georgia</string>
+    <string name="font_literata">Literata</string>
+    <string name="font_opendyslexic">OpenDyslexic</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_sepia">Sepia</string>
+
+    <!-- Stats -->
+    <string name="statistics">Statistics</string>
+    <string name="last_30_days">Last 30 days</string>
+    <string name="total_time">Total time</string>
+    <string name="pages_read">Pages read</string>
+    <string name="chapters_completed">Chapters completed</string>
+    <string name="streak">Streak</string>
+    <string name="streak_days">%d days</string>
+    <string name="current_streak">Current streak</string>
+    <string name="best_streak">Best streak</string>
+    <string name="daily_goal">Daily goal</string>
+    <string name="daily_goal_progress">%1$d min / %2$d min</string>
+    <string name="goal_achieved">Goal achieved</string>
+    <string name="goal_remaining">%d min remaining</string>
+
+    <!-- Admin -->
+    <string name="administration">Administration</string>
+    <string name="no_admin_permission">You do not have admin permissions</string>
+    <string name="libraries">Libraries</string>
+    <string name="server_info">Server information</string>
+    <string name="version_label">Version: %s</string>
+    <string name="os_label">OS: %s</string>
+    <string name="cores_label">Cores: %d</string>
+    <string name="running_in_docker">Running in Docker</string>
+    <string name="scan">Scan</string>
+    <string name="refresh_metadata">Refresh metadata</string>
+    <string name="users">Users</string>
+    <string name="invite_user">Invite user</string>
+    <string name="delete_user">Delete user</string>
+    <string name="email_label">Email address</string>
+    <string name="invite">Invite</string>
+
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="appearance">Appearance</string>
+    <string name="theme">Theme</string>
+    <string name="follow_system">Follow system</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="dynamic_color">Dynamic color</string>
+    <string name="dynamic_color_desc">Adapt colors to wallpaper</string>
+    <string name="reading">Reading</string>
+    <string name="reading_direction">Reading direction</string>
+    <string name="dir_rtl_manga">Right to left (Manga)</string>
+    <string name="keep_screen_on">Keep screen on</string>
+    <string name="daily_goal_setting">Daily reading goal</string>
+    <string name="daily_goal_minutes">%d minutes</string>
+    <string name="downloads_section">Downloads</string>
+    <string name="wifi_only">Wi-Fi only</string>
+    <string name="wifi_only_desc">Download only on Wi-Fi</string>
+    <string name="servers_section">Servers</string>
+    <string name="manage_servers_desc">Add, edit or remove servers</string>
+    <string name="storage_section">Storage</string>
+    <string name="image_cache">Image cache</string>
+    <string name="image_cache_size">%s used of 500 MB</string>
+    <string name="clear_cache">Clear</string>
+    <string name="about">About</string>
+    <string name="app_version">Version 0.1.0</string>
+    <string name="your_digital_library">Your digital library</string>
+    <string name="collections_subtitle">Series groupings</string>
+    <string name="reading_lists_subtitle">Your custom lists</string>
+    <string name="font_size_px">%d px</string>
+
+    <!-- More Screen -->
+    <string name="stats_subtitle">Reading time, pages read</string>
+    <string name="servers_subtitle">Manage connections</string>
+    <string name="admin_subtitle">Server control panel</string>
+    <string name="settings_subtitle">Theme, reader, downloads</string>
+
+    <!-- Collections -->
+    <string name="collections">Collections</string>
+    <string name="no_collections">No collections</string>
+    <string name="series_count">%d series</string>
+    <string name="no_series_in_collection">No series in this collection</string>
+
+    <!-- Reading Lists -->
+    <string name="reading_lists">Reading lists</string>
+    <string name="no_reading_lists">No reading lists</string>
+    <string name="items_count">%d items</string>
+    <string name="list_empty">The list is empty</string>
+
+    <!-- Add to Collection / Reading List -->
+    <string name="add_to_collection">Add to collection</string>
+    <string name="add_to_reading_list">Add to reading list</string>
+    <string name="create_new">Create new</string>
+    <string name="new_collection_title">New collection</string>
+    <string name="new_reading_list_title">New reading list</string>
+    <string name="enter_name">Enter a name</string>
+    <string name="create">Create</string>
+    <string name="added_to_collection">Added to collection</string>
+    <string name="error_adding_to_collection">Error adding to collection</string>
+    <string name="added_to_reading_list">Added to reading list</string>
+    <string name="error_adding_to_reading_list">Error adding to reading list</string>
+    <string name="mark_as_read">Mark as read</string>
+    <string name="mark_as_unread">Mark as unread</string>
+
+    <!-- OPDS -->
+    <string name="search_catalog_hint">Search catalog…</string>
+    <string name="no_catalog_entries">No entries in this catalog</string>
+    <string name="load_error">Error loading: %s</string>
+</resources>
