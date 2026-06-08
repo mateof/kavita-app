@@ -23,6 +23,7 @@ import com.kavita.core.model.repository.StatsRepository
 import com.kavita.core.data.preferences.UserPreferencesDataStore
 import com.kavita.core.network.ActiveServerProvider
 import com.kavita.core.readium.ReadiumManager
+import com.kavita.feature.reader.readium.isImageBasedEpub
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.NonCancellable
@@ -67,6 +68,8 @@ data class ReaderUiState(
     val prevChapterId: Int? = null,
     val pdfFile: File? = null,
     val publicationReady: Boolean = false,
+    /** EPUB de imágenes/cómic (fixed-layout): se renderiza con el lector de imágenes. */
+    val epubIsImageBased: Boolean = false,
     val tableOfContents: List<TocEntry> = emptyList(),
     /** URLs precomputadas para cada pagina del capitulo (solo comic/manga). */
     val pageUrls: List<String> = emptyList(),
@@ -213,7 +216,15 @@ class ReaderViewModel @Inject constructor(
                             val pub = readiumManager.openPublication(targetFile)
                             publication = pub
                             val toc = extractToc(pub)
-                            _uiState.update { it.copy(pdfFile = targetFile, publicationReady = true, tableOfContents = toc) }
+                            val imageBased = try { pub.isImageBasedEpub() } catch (_: Exception) { false }
+                            _uiState.update {
+                                it.copy(
+                                    pdfFile = targetFile,
+                                    publicationReady = true,
+                                    epubIsImageBased = imageBased,
+                                    tableOfContents = toc,
+                                )
+                            }
                         } else {
                             val pub = readiumManager.openPublication(targetFile)
                             publication = pub

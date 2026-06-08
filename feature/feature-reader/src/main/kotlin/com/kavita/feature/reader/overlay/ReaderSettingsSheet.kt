@@ -290,8 +290,10 @@ fun ReaderSettingsSheet(
                             val rounded = (newValue * 10).roundToInt() / 10f
                             onEpubLineSpacingChange(rounded)
                         },
-                        valueRange = 1.0f..2.5f,
-                        steps = 14, // (2.5 - 1.0) / 0.1 - 1 = 14 pasos intermedios
+                        // Readium aplica lineHeight en el rango útil ~1.0-2.0; por encima
+                        // de 2.0 lo recorta y el slider no tendría efecto visible.
+                        valueRange = 1.0f..2.0f,
+                        steps = 9, // (2.0 - 1.0) / 0.1 - 1 = 9 pasos intermedios
                         modifier = Modifier.weight(1f),
                     )
                     Text(

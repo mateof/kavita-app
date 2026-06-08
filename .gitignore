@@ -1,5 +1,6 @@
 *.iml
 .gradle
+.kotlin/
 /local.properties
 /.idea
 .DS_Store
@@ -18,6 +19,8 @@ local.properties
 
 # Keystore
 licencia/
+temp/*.jks
+temp/keystore.env
 
 # IDE
 .vscode/

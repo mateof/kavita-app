@@ -350,7 +350,7 @@ private fun SinglePageContent(
     modifier: Modifier = Modifier,
 ) {
     ZoomablePageImage(
-        imageUrl = getPageImageUrl(pageIndex),
+        model = getPageImageUrl(pageIndex),
         contentDescription = "Pagina ${pageIndex + 1}",
         contentScale = pageScaleType.toContentScale(),
         modifier = modifier,

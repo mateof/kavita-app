@@ -17,13 +17,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.IntSize
 import coil.compose.AsyncImage
 
 @Composable
 fun ZoomablePageImage(
-    imageUrl: String,
+    model: Any?,
     contentDescription: String,
     contentScale: ContentScale = ContentScale.Fit,
+    onTap: ((offset: Offset, size: IntSize) -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     var scale by remember { mutableFloatStateOf(1f) }
@@ -47,8 +49,9 @@ fun ZoomablePageImage(
                 if (scale > 1f) Modifier.transformable(state = transformableState)
                 else Modifier
             )
-            .pointerInput(Unit) {
+            .pointerInput(onTap) {
                 detectTapGestures(
+                    onTap = onTap?.let { handler -> { pos -> handler(pos, size) } },
                     onDoubleTap = {
                         if (scale > 1.1f) {
                             scale = 1f
@@ -62,7 +65,7 @@ fun ZoomablePageImage(
         contentAlignment = Alignment.Center,
     ) {
         AsyncImage(
-            model = imageUrl,
+            model = model,
             contentDescription = contentDescription,
             contentScale = contentScale,
             modifier = Modifier

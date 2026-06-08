@@ -31,6 +31,7 @@ import com.kavita.core.ui.components.LoadingIndicator
 import com.kavita.core.ui.components.ErrorScreen
 import com.kavita.feature.reader.comic.ComicReader
 import com.kavita.feature.reader.pdf.PdfPageReader
+import com.kavita.feature.reader.readium.EpubImageReader
 import com.kavita.feature.reader.readium.ReadiumReader
 import com.kavita.feature.reader.overlay.BrightnessOverlay
 import com.kavita.feature.reader.overlay.ReaderControls
@@ -98,22 +99,35 @@ fun ReaderScreen(
                     MangaFormat.EPUB -> {
                         val publication = viewModel.publication
                         if (publication != null && uiState.publicationReady) {
-                            ReadiumReader(
-                                publication = publication,
-                                format = uiState.format,
-                                currentPage = uiState.currentPage,
-                                pageLayout = preferences.pageLayout,
-                                pageScaleType = preferences.pageScaleType,
-                                readingDirection = preferences.defaultReadingDirection,
-                                tapNavigation = preferences.tapNavigation,
-                                epubFontSize = preferences.epubFontSize,
-                                epubFontFamily = preferences.epubFontFamily,
-                                epubLineSpacing = preferences.epubLineSpacing,
-                                epubTheme = preferences.epubTheme,
-                                onPageChanged = viewModel::onPageChanged,
-                                onTotalPagesResolved = viewModel::onTotalPagesResolved,
-                                onTapCenter = viewModel::toggleControls,
-                            )
+                            if (uiState.epubIsImageBased) {
+                                EpubImageReader(
+                                    publication = publication,
+                                    currentPage = uiState.currentPage,
+                                    readingDirection = preferences.defaultReadingDirection,
+                                    pageScaleType = preferences.pageScaleType,
+                                    tapNavigation = preferences.tapNavigation,
+                                    onPageChanged = viewModel::onPageChanged,
+                                    onTotalPagesResolved = viewModel::onTotalPagesResolved,
+                                    onTapCenter = viewModel::toggleControls,
+                                )
+                            } else {
+                                ReadiumReader(
+                                    publication = publication,
+                                    format = uiState.format,
+                                    currentPage = uiState.currentPage,
+                                    pageLayout = preferences.pageLayout,
+                                    pageScaleType = preferences.pageScaleType,
+                                    readingDirection = preferences.defaultReadingDirection,
+                                    tapNavigation = preferences.tapNavigation,
+                                    epubFontSize = preferences.epubFontSize,
+                                    epubFontFamily = preferences.epubFontFamily,
+                                    epubLineSpacing = preferences.epubLineSpacing,
+                                    epubTheme = preferences.epubTheme,
+                                    onPageChanged = viewModel::onPageChanged,
+                                    onTotalPagesResolved = viewModel::onTotalPagesResolved,
+                                    onTapCenter = viewModel::toggleControls,
+                                )
+                            }
                         } else {
                             DownloadProgressIndicator(uiState)
                         }
