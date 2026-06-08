@@ -1,6 +1,7 @@
 package com.kavita.core.data.di
 
 import com.kavita.core.data.repository.AdminRepositoryImpl
+import com.kavita.core.data.repository.AppUpdateRepositoryImpl
 import com.kavita.core.data.repository.AuthRepositoryImpl
 import com.kavita.core.data.repository.CollectionRepositoryImpl
 import com.kavita.core.data.repository.DownloadRepositoryImpl
@@ -12,6 +13,7 @@ import com.kavita.core.data.repository.SeriesRepositoryImpl
 import com.kavita.core.data.repository.ServerRepositoryImpl
 import com.kavita.core.data.repository.StatsRepositoryImpl
 import com.kavita.core.model.repository.AdminRepository
+import com.kavita.core.model.repository.AppUpdateRepository
 import com.kavita.core.model.repository.AuthRepository
 import com.kavita.core.model.repository.CollectionRepository
 import com.kavita.core.model.repository.DownloadRepository
@@ -75,4 +77,8 @@ abstract class DataModule {
     @Binds
     @Singleton
     abstract fun bindReadingListRepository(impl: ReadingListRepositoryImpl): ReadingListRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAppUpdateRepository(impl: AppUpdateRepositoryImpl): AppUpdateRepository
 }
