@@ -6,9 +6,9 @@ import com.kavita.core.model.ServerType
 import com.kavita.core.model.repository.AuthRepository
 import com.kavita.core.model.repository.ServerInfo
 import com.kavita.core.network.ActiveServerProvider
+import com.kavita.core.network.CleanAccountApiFactory
 import com.kavita.core.network.RetrofitFactory
 import com.kavita.core.network.ServerTokenStore
-import com.kavita.core.network.api.KavitaAccountApi
 import com.kavita.core.network.api.KavitaServerApi
 import com.kavita.core.network.dto.LoginRequest
 import com.kavita.core.network.dto.RefreshTokenRequest
@@ -21,11 +21,13 @@ class AuthRepositoryImpl @Inject constructor(
     private val serverTokenStore: ServerTokenStore,
     private val activeServerProvider: ActiveServerProvider,
     private val serverDao: ServerDao,
+    private val cleanAccountApiFactory: CleanAccountApiFactory,
 ) : AuthRepository {
 
     override suspend fun login(serverUrl: String, username: String, password: String): Result<Server> =
         runCatching {
-            val api = retrofitFactory.createApi<KavitaAccountApi>(serverUrl)
+            // Cliente limpio: el login no debe pasar por el SessionAuthenticator.
+            val api = cleanAccountApiFactory.create(serverUrl)
             val response = api.login(LoginRequest(username, password))
 
             val server = Server(
@@ -63,7 +65,7 @@ class AuthRepositoryImpl @Inject constructor(
         runCatching {
             val server = serverDao.getById(serverId)
                 ?: throw IllegalStateException("Server not found")
-            val api = retrofitFactory.createApi<KavitaAccountApi>(server.url)
+            val api = cleanAccountApiFactory.create(server.url)
             val currentToken = serverTokenStore.getAccessToken(serverId) ?: server.token ?: ""
             val currentRefresh = serverTokenStore.getRefreshToken(serverId) ?: server.refreshToken ?: ""
 
@@ -86,6 +88,30 @@ class AuthRepositoryImpl @Inject constructor(
                 version = "",
                 isKavita = true,
             )
+        }
+
+    override suspend fun reauthenticate(serverId: Long, password: String): Result<Unit> =
+        runCatching {
+            val server = serverDao.getById(serverId)
+                ?: throw IllegalStateException("Servidor no encontrado")
+            val username = server.username
+                ?: throw IllegalStateException("El servidor no tiene usuario guardado")
+
+            val api = cleanAccountApiFactory.create(server.url)
+            val response = api.login(LoginRequest(username, password))
+
+            // Actualizar el MISMO servidor (sin borrarlo ni duplicarlo)
+            serverDao.upsert(
+                server.copy(
+                    apiKey = response.apiKey,
+                    token = response.token,
+                    refreshToken = response.refreshToken,
+                )
+            )
+            serverTokenStore.setTokens(serverId, response.token, response.refreshToken)
+            if (activeServerProvider.activeServerId.value == serverId) {
+                activeServerProvider.setActiveServer(serverId, server.url, response.apiKey)
+            }
         }
 
     override suspend fun logout(serverId: Long) {

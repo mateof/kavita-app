@@ -27,6 +27,11 @@
     <string name="hide_password">Hide password</string>
     <string name="login">Log in</string>
     <string name="connect">Connect</string>
+    <!-- Session expired / re-login -->
+    <string name="session_expired_title">Session expired</string>
+    <string name="session_expired_message">Your session for %1$s has expired. Enter your password to reconnect. Your downloaded data is kept.</string>
+    <string name="session_relogin">Log back in</string>
+    <string name="session_relogin_error">Couldn\'t log in. Check your password.</string>
     <string name="manage_servers">Manage servers</string>
     <string name="servers">Servers</string>
     <string name="add_server">Add server</string>

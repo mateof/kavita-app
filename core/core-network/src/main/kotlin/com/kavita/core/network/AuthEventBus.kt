@@ -9,6 +9,12 @@ import javax.inject.Singleton
 sealed class AuthEvent {
     data class TokenExpired(val serverId: Long) : AuthEvent()
     data class Unauthorized(val serverId: Long) : AuthEvent()
+
+    /**
+     * No se ha podido renovar la sesión automáticamente (ni refresh-token ni apiKey).
+     * El usuario debe volver a iniciar sesión, pero el servidor y los datos se conservan.
+     */
+    data class SessionExpired(val serverId: Long) : AuthEvent()
 }
 
 @Singleton

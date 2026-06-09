@@ -12,6 +12,8 @@ import com.kavita.core.data.repository.ReadingListRepositoryImpl
 import com.kavita.core.data.repository.SeriesRepositoryImpl
 import com.kavita.core.data.repository.ServerRepositoryImpl
 import com.kavita.core.data.repository.StatsRepositoryImpl
+import com.kavita.core.data.repository.TokenRefresherImpl
+import com.kavita.core.network.TokenRefresher
 import com.kavita.core.model.repository.AdminRepository
 import com.kavita.core.model.repository.AppUpdateRepository
 import com.kavita.core.model.repository.AuthRepository
@@ -81,4 +83,8 @@ abstract class DataModule {
     @Binds
     @Singleton
     abstract fun bindAppUpdateRepository(impl: AppUpdateRepositoryImpl): AppUpdateRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindTokenRefresher(impl: TokenRefresherImpl): TokenRefresher
 }

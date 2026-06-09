@@ -28,6 +28,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.kavita.app.SessionExpiryViewModel
 import com.kavita.app.StartupState
 import com.kavita.app.StartupViewModel
 import com.kavita.app.navigation.KavitaNavHost
@@ -54,7 +55,10 @@ enum class TopLevelDestination(
 }
 
 @Composable
-fun KavitaApp(startupViewModel: StartupViewModel = hiltViewModel()) {
+fun KavitaApp(
+    startupViewModel: StartupViewModel = hiltViewModel(),
+    sessionExpiryViewModel: SessionExpiryViewModel = hiltViewModel(),
+) {
     KavitaTheme {
         val startupState by startupViewModel.state.collectAsStateWithLifecycle()
 
@@ -62,6 +66,18 @@ fun KavitaApp(startupViewModel: StartupViewModel = hiltViewModel()) {
             StartupState.Loading -> LoadingIndicator()
             StartupState.NeedsLogin -> KavitaAppContent(startDestination = LoginRoute)
             StartupState.Ready -> KavitaAppContent(startDestination = HomeRoute)
+        }
+
+        // Diálogo de sesión caducada (re-login sin borrar el servidor)
+        val sessionState by sessionExpiryViewModel.state.collectAsStateWithLifecycle()
+        if (sessionState.visible) {
+            SessionExpiredDialog(
+                serverName = sessionState.serverName,
+                submitting = sessionState.submitting,
+                error = sessionState.error,
+                onSubmit = sessionExpiryViewModel::submit,
+                onDismiss = sessionExpiryViewModel::dismiss,
+            )
         }
     }
 }

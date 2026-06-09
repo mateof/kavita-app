@@ -27,6 +27,11 @@
     <string name="hide_password">Ocultar contrasena</string>
     <string name="login">Iniciar sesion</string>
     <string name="connect">Conectar</string>
+    <!-- Sesión caducada / re-login -->
+    <string name="session_expired_title">Sesión caducada</string>
+    <string name="session_expired_message">La sesión de %1$s ha caducado. Introduce tu contraseña para volver a conectar. Tus datos descargados se conservan.</string>
+    <string name="session_relogin">Volver a entrar</string>
+    <string name="session_relogin_error">No se pudo iniciar sesión. Revisa la contraseña.</string>
     <string name="manage_servers">Gestionar servidores</string>
     <string name="servers">Servidores</string>
     <string name="add_server">Anadir servidor</string>

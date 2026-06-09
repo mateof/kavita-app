@@ -2,6 +2,7 @@ package com.kavita.core.network.di
 
 import com.kavita.core.network.api.GitHubApi
 import com.kavita.core.network.interceptor.AuthInterceptor
+import com.kavita.core.network.interceptor.SessionAuthenticator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -32,6 +33,7 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor,
+        sessionAuthenticator: SessionAuthenticator,
     ): OkHttpClient {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BASIC
@@ -39,6 +41,7 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
             .addInterceptor(logging)
+            .authenticator(sessionAuthenticator)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
