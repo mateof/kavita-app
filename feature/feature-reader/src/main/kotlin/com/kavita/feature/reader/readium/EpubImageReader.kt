@@ -1,33 +1,13 @@
 package com.kavita.feature.reader.readium
 
 import android.util.Log
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.IntSize
-import com.kavita.core.model.PageScaleType
-import com.kavita.core.model.ReadingDirection
-import com.kavita.core.model.TapNavigation
-import com.kavita.feature.reader.comic.ZoomablePageImage
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.readium.r2.shared.ExperimentalReadiumApi
 import org.readium.r2.shared.publication.Link
@@ -37,151 +17,10 @@ import org.readium.r2.shared.publication.presentation.presentation
 import org.readium.r2.shared.util.Url
 
 /**
- * Lector para EPUB basados en imágenes (cómic / fixed-layout). Readium renderiza estos
- * EPUB como reflowable cuando no declaran bien el fixed-layout, dejando la imagen pequeña
- * y anclada arriba-izquierda, y sin gesto de arrastre. Aquí extraemos la imagen de cada
- * página del propio EPUB y la mostramos con un HorizontalPager + pinch-zoom (reutilizando
- * [ZoomablePageImage]), igual que el lector de cómics.
+ * Soporte para EPUB basados en imágenes (cómic / fixed-layout). La detección decide si un
+ * EPUB debe leerse con el lector de imágenes (ComicReader), y [rememberEpubPageModel] extrae
+ * la imagen de cada página del propio EPUB para que Coil la muestre.
  */
-@OptIn(ExperimentalReadiumApi::class)
-@Composable
-fun EpubImageReader(
-    publication: Publication,
-    currentPage: Int,
-    readingDirection: ReadingDirection,
-    pageScaleType: PageScaleType,
-    tapNavigation: TapNavigation,
-    onPageChanged: (Int) -> Unit,
-    onTotalPagesResolved: ((Int) -> Unit)? = null,
-    onTapCenter: () -> Unit,
-) {
-    val pages = remember(publication) { publication.readingOrder }
-    val pageCount = pages.size
-
-    LaunchedEffect(pageCount) { onTotalPagesResolved?.invoke(pageCount) }
-    if (pageCount == 0) return
-
-    val reverseLayout = readingDirection == ReadingDirection.RIGHT_TO_LEFT
-    val pagerState = rememberPagerState(
-        initialPage = currentPage.coerceIn(0, pageCount - 1),
-        pageCount = { pageCount },
-    )
-    val scope = rememberCoroutineScope()
-
-    // Reportar la página visible al ViewModel
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect { page -> onPageChanged(page) }
-    }
-    // Navegación externa (slider de página / prev-next)
-    LaunchedEffect(currentPage) {
-        val target = currentPage.coerceIn(0, pageCount - 1)
-        if (target != pagerState.currentPage) pagerState.scrollToPage(target)
-    }
-
-    HorizontalPager(
-        state = pagerState,
-        reverseLayout = reverseLayout,
-        beyondViewportPageCount = 2,
-        modifier = Modifier.fillMaxSize(),
-    ) { page ->
-        // Un único manejador de tap (navegación/centro). El doble-tap de zoom lo gestiona
-        // ZoomablePageImage en el mismo detector, para que no compitan dos detectores.
-        val onTap: (Offset, IntSize) -> Unit = { offset, size ->
-            handleReaderTap(
-                offset = offset,
-                size = size,
-                tapNavigation = tapNavigation,
-                onCenter = onTapCenter,
-                onPrev = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
-                onNext = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
-            )
-        }
-
-        EpubImagePage(
-            publication = publication,
-            link = pages[page],
-            contentScale = pageScaleType.toContentScale(),
-            pageNumber = page + 1,
-            onTap = onTap,
-            modifier = Modifier.fillMaxSize(),
-        )
-    }
-}
-
-private fun handleReaderTap(
-    offset: Offset,
-    size: IntSize,
-    tapNavigation: TapNavigation,
-    onCenter: () -> Unit,
-    onPrev: () -> Unit,
-    onNext: () -> Unit,
-) {
-    val width = size.width
-    val height = size.height
-    when (tapNavigation) {
-        TapNavigation.LATERAL -> {
-            val zone = width / 3
-            when {
-                offset.x < zone -> onPrev()
-                offset.x > width - zone -> onNext()
-                else -> onCenter()
-            }
-        }
-        TapNavigation.VERTICAL -> {
-            val zone = height / 3
-            when {
-                offset.y < zone -> onPrev()
-                offset.y > height - zone -> onNext()
-                else -> onCenter()
-            }
-        }
-        TapNavigation.NONE -> {
-            val zone = width / 3
-            if (offset.x > zone && offset.x < width - zone) onCenter()
-        }
-    }
-}
-
-@OptIn(ExperimentalReadiumApi::class)
-@Composable
-private fun EpubImagePage(
-    publication: Publication,
-    link: Link,
-    contentScale: ContentScale,
-    pageNumber: Int,
-    onTap: (Offset, IntSize) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    var model by remember(link) { mutableStateOf<Any?>(null) }
-    var failed by remember(link) { mutableStateOf(false) }
-
-    LaunchedEffect(link) {
-        val bytes = withContext(Dispatchers.IO) { publication.imageBytesForPage(link) }
-        if (bytes != null) model = bytes else failed = true
-    }
-
-    val current = model
-    when {
-        current != null -> ZoomablePageImage(
-            model = current,
-            contentDescription = "Pagina $pageNumber",
-            contentScale = contentScale,
-            onTap = onTap,
-            modifier = modifier,
-        )
-        else -> Box(
-            modifier = modifier.pointerInput(Unit) {
-                detectTapGestures { offset -> onTap(offset, size) }
-            },
-            contentAlignment = Alignment.Center,
-        ) {
-            if (failed) Text("No se pudo cargar la página $pageNumber")
-            else CircularProgressIndicator()
-        }
-    }
-}
-
-// --- Detección y extracción de imágenes del EPUB ---
 
 private const val TAG = "EpubImageReader"
 
@@ -203,14 +42,25 @@ private fun findImageRef(html: String): String? =
         ?: CSS_IMAGE_URL.find(html)?.groupValues?.getOrNull(1)
 
 /**
+ * Carga (de forma asíncrona) los bytes de la imagen de la página [link] del EPUB y los
+ * devuelve como modelo para Coil (ByteArray). null mientras carga o si falla.
+ */
+@OptIn(ExperimentalReadiumApi::class)
+@Composable
+fun rememberEpubPageModel(publication: Publication, link: Link): Any? {
+    var model by remember(link) { mutableStateOf<Any?>(null) }
+    LaunchedEffect(link) {
+        model = withContext(Dispatchers.IO) { publication.imageBytesForPage(link) }
+    }
+    return model
+}
+
+/**
  * Decide si un EPUB debe tratarse como cómic/imágenes. Cubre tres casos:
  * 1. Declara fixed-layout en su metadata.
  * 2. El reading order ya son recursos de imagen (estilo Divina).
  * 3. Las páginas de contenido son XHTML que básicamente envuelven una sola imagen (cómics
  *    exportados como EPUB reflowable que Readium no escala bien).
- *
- * Para el caso 3 muestreamos páginas repartidas por el interior del documento (saltando las
- * primeras, que suelen ser portada/título/créditos con texto real) y decidimos por mayoría.
  */
 @OptIn(ExperimentalReadiumApi::class)
 suspend fun Publication.isImageBasedEpub(): Boolean = withContext(Dispatchers.IO) {
@@ -305,10 +155,4 @@ private suspend fun Publication.readBytes(url: Url): ByteArray? {
     } finally {
         resource.close()
     }
-}
-
-private fun PageScaleType.toContentScale(): ContentScale = when (this) {
-    PageScaleType.FIT_SCREEN -> ContentScale.Fit
-    PageScaleType.FIT_WIDTH -> ContentScale.FillWidth
-    PageScaleType.FIT_HEIGHT -> ContentScale.FillHeight
 }

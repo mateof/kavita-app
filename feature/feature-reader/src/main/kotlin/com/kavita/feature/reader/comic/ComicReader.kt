@@ -82,6 +82,11 @@ private fun PreloadPages(
     }
 }
 
+/**
+ * Lector paginado de imagenes. La imagen de cada pagina se obtiene de [pageModel], que puede
+ * devolver una URL (comic vía servidor) o bytes (imagen extraída de un EPUB). null mientras
+ * carga. Reacciona a [currentPage] para permitir saltos externos (slider, índice).
+ */
 @Composable
 fun ComicReader(
     totalPages: Int,
@@ -91,14 +96,14 @@ fun ComicReader(
     pageScaleType: PageScaleType,
     pageTransition: PageTransition,
     tapNavigation: TapNavigation,
-    getPageImageUrl: (Int) -> String,
+    pageModel: @Composable (Int) -> Any?,
     onPageChanged: (Int) -> Unit,
     onTapCenter: () -> Unit,
     pageUrls: List<String> = emptyList(),
 ) {
     if (totalPages == 0) return
 
-    // Precarga de imagenes con Coil si las URLs estan precomputadas
+    // Precarga de imagenes con Coil si las URLs estan precomputadas (solo comic)
     if (pageUrls.isNotEmpty()) {
         PreloadPages(
             currentPage = currentPage,
@@ -113,7 +118,7 @@ fun ComicReader(
             totalPages = totalPages,
             currentPage = currentPage,
             pageUrls = pageUrls,
-            getPageImageUrl = getPageImageUrl,
+            pageModel = pageModel,
             onPageChanged = onPageChanged,
             onTapCenter = onTapCenter,
         )
@@ -129,12 +134,13 @@ fun ComicReader(
             VerticalPagedReader(
                 effectivePageCount = effectivePageCount,
                 initialPage = initialPage,
+                currentPage = currentPage,
                 isDouble = isDouble,
                 totalPages = totalPages,
                 pageScaleType = pageScaleType,
                 pageTransition = pageTransition,
                 tapNavigation = tapNavigation,
-                getPageImageUrl = getPageImageUrl,
+                pageModel = pageModel,
                 onPageChanged = onPageChanged,
                 onTapCenter = onTapCenter,
             )
@@ -144,13 +150,14 @@ fun ComicReader(
             HorizontalPagedReader(
                 effectivePageCount = effectivePageCount,
                 initialPage = initialPage,
+                currentPage = currentPage,
                 reverseLayout = reverseLayout,
                 isDouble = isDouble,
                 totalPages = totalPages,
                 pageScaleType = pageScaleType,
                 pageTransition = pageTransition,
                 tapNavigation = tapNavigation,
-                getPageImageUrl = getPageImageUrl,
+                pageModel = pageModel,
                 onPageChanged = onPageChanged,
                 onTapCenter = onTapCenter,
             )
@@ -162,13 +169,14 @@ fun ComicReader(
 private fun HorizontalPagedReader(
     effectivePageCount: Int,
     initialPage: Int,
+    currentPage: Int,
     reverseLayout: Boolean,
     isDouble: Boolean,
     totalPages: Int,
     pageScaleType: PageScaleType,
     pageTransition: PageTransition,
     tapNavigation: TapNavigation,
-    getPageImageUrl: (Int) -> String,
+    pageModel: @Composable (Int) -> Any?,
     onPageChanged: (Int) -> Unit,
     onTapCenter: () -> Unit,
 ) {
@@ -181,6 +189,13 @@ private fun HorizontalPagedReader(
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             onPageChanged(if (isDouble) page * 2 else page)
+        }
+    }
+    // Saltos externos (slider de pagina, indice)
+    LaunchedEffect(currentPage) {
+        val target = if (isDouble) currentPage / 2 else currentPage
+        if (target != pagerState.currentPage && target in 0 until effectivePageCount) {
+            pagerState.scrollToPage(target)
         }
     }
 
@@ -237,14 +252,14 @@ private fun HorizontalPagedReader(
                 spreadIndex = page,
                 totalPages = totalPages,
                 pageScaleType = pageScaleType,
-                getPageImageUrl = getPageImageUrl,
+                pageModel = pageModel,
                 modifier = pageModifier,
             )
         } else {
             SinglePageContent(
                 pageIndex = page,
                 pageScaleType = pageScaleType,
-                getPageImageUrl = getPageImageUrl,
+                pageModel = pageModel,
                 modifier = pageModifier,
             )
         }
@@ -255,12 +270,13 @@ private fun HorizontalPagedReader(
 private fun VerticalPagedReader(
     effectivePageCount: Int,
     initialPage: Int,
+    currentPage: Int,
     isDouble: Boolean,
     totalPages: Int,
     pageScaleType: PageScaleType,
     pageTransition: PageTransition,
     tapNavigation: TapNavigation,
-    getPageImageUrl: (Int) -> String,
+    pageModel: @Composable (Int) -> Any?,
     onPageChanged: (Int) -> Unit,
     onTapCenter: () -> Unit,
 ) {
@@ -273,6 +289,12 @@ private fun VerticalPagedReader(
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             onPageChanged(if (isDouble) page * 2 else page)
+        }
+    }
+    LaunchedEffect(currentPage) {
+        val target = if (isDouble) currentPage / 2 else currentPage
+        if (target != pagerState.currentPage && target in 0 until effectivePageCount) {
+            pagerState.scrollToPage(target)
         }
     }
 
@@ -328,14 +350,14 @@ private fun VerticalPagedReader(
                 spreadIndex = page,
                 totalPages = totalPages,
                 pageScaleType = pageScaleType,
-                getPageImageUrl = getPageImageUrl,
+                pageModel = pageModel,
                 modifier = pageModifier,
             )
         } else {
             SinglePageContent(
                 pageIndex = page,
                 pageScaleType = pageScaleType,
-                getPageImageUrl = getPageImageUrl,
+                pageModel = pageModel,
                 modifier = pageModifier,
             )
         }
@@ -346,11 +368,11 @@ private fun VerticalPagedReader(
 private fun SinglePageContent(
     pageIndex: Int,
     pageScaleType: PageScaleType,
-    getPageImageUrl: (Int) -> String,
+    pageModel: @Composable (Int) -> Any?,
     modifier: Modifier = Modifier,
 ) {
     ZoomablePageImage(
-        model = getPageImageUrl(pageIndex),
+        model = pageModel(pageIndex),
         contentDescription = "Pagina ${pageIndex + 1}",
         contentScale = pageScaleType.toContentScale(),
         modifier = modifier,
@@ -362,7 +384,7 @@ private fun DoublePageContent(
     spreadIndex: Int,
     totalPages: Int,
     pageScaleType: PageScaleType,
-    getPageImageUrl: (Int) -> String,
+    pageModel: @Composable (Int) -> Any?,
     modifier: Modifier = Modifier,
 ) {
     val leftPage = spreadIndex * 2
@@ -371,7 +393,7 @@ private fun DoublePageContent(
 
     Row(modifier = modifier) {
         AsyncImage(
-            model = getPageImageUrl(leftPage),
+            model = pageModel(leftPage),
             contentDescription = "Pagina ${leftPage + 1}",
             contentScale = scale,
             modifier = Modifier
@@ -380,7 +402,7 @@ private fun DoublePageContent(
         )
         if (rightPage < totalPages) {
             AsyncImage(
-                model = getPageImageUrl(rightPage),
+                model = pageModel(rightPage),
                 contentDescription = "Pagina ${rightPage + 1}",
                 contentScale = scale,
                 modifier = Modifier
@@ -396,7 +418,7 @@ private fun WebtoonReader(
     totalPages: Int,
     currentPage: Int,
     pageUrls: List<String>,
-    getPageImageUrl: (Int) -> String,
+    pageModel: @Composable (Int) -> Any?,
     onPageChanged: (Int) -> Unit,
     onTapCenter: () -> Unit,
 ) {
@@ -410,7 +432,14 @@ private fun WebtoonReader(
         onPageChanged(currentVisiblePage)
     }
 
-    // Precarga de imagenes para scroll continuo (webtoon)
+    // Saltos externos (slider, indice)
+    LaunchedEffect(currentPage) {
+        if (currentPage != listState.firstVisibleItemIndex && currentPage in 0 until totalPages) {
+            listState.scrollToItem(currentPage)
+        }
+    }
+
+    // Precarga de imagenes para scroll continuo (webtoon), solo si hay URLs
     if (pageUrls.isNotEmpty()) {
         PreloadPages(
             currentPage = currentVisiblePage,
@@ -436,7 +465,7 @@ private fun WebtoonReader(
     ) {
         items(totalPages) { page ->
             AsyncImage(
-                model = getPageImageUrl(page),
+                model = pageModel(page),
                 contentDescription = "Pagina ${page + 1}",
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier.fillMaxWidth(),

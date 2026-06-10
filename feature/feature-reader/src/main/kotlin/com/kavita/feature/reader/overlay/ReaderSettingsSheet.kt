@@ -44,6 +44,7 @@ fun ReaderSettingsSheet(
     pageTransition: PageTransition,
     tapNavigation: TapNavigation,
     format: MangaFormat = MangaFormat.UNKNOWN,
+    epubIsImageBased: Boolean = false,
     pdfNightMode: Boolean = false,
     epubFontSize: Float = 16f,
     epubFontFamily: String = "default",
@@ -62,6 +63,11 @@ fun ReaderSettingsSheet(
     onDismiss: () -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    // EPUB de texto (Readium): la escala de página y la transición no aplican (el texto
+    // reflota), pero la tipografía sí. En EPUB de imágenes se lee con el ComicReader, donde
+    // todos los ajustes genéricos funcionan.
+    val isTextEpub = format == MangaFormat.EPUB && !epubIsImageBased
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -145,47 +151,50 @@ fun ReaderSettingsSheet(
                 }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            // Escala de página y transición: no aplican a EPUB de texto (reflota).
+            if (!isTextEpub) {
+                Spacer(modifier = Modifier.height(20.dp))
 
-            // Escala de pagina
-            Text(
-                text = stringResource(R.string.page_fit),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.primary,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                scaleOptions.forEach { (scale, label) ->
-                    FilterChip(
-                        selected = pageScaleType == scale,
-                        onClick = { onPageScaleTypeChange(scale) },
-                        label = { Text(stringResource(label)) },
-                    )
+                // Escala de pagina
+                Text(
+                    text = stringResource(R.string.page_fit),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    scaleOptions.forEach { (scale, label) ->
+                        FilterChip(
+                            selected = pageScaleType == scale,
+                            onClick = { onPageScaleTypeChange(scale) },
+                            label = { Text(stringResource(label)) },
+                        )
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
-            // Transicion
-            Text(
-                text = stringResource(R.string.page_transition),
-                style = MaterialTheme.typography.titleSmall,
-                color = MaterialTheme.colorScheme.primary,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            FlowRow(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
-                transitionOptions.forEach { (transition, label) ->
-                    FilterChip(
-                        selected = pageTransition == transition,
-                        onClick = { onPageTransitionChange(transition) },
-                        label = { Text(stringResource(label)) },
-                    )
+                // Transicion
+                Text(
+                    text = stringResource(R.string.page_transition),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    transitionOptions.forEach { (transition, label) ->
+                        FilterChip(
+                            selected = pageTransition == transition,
+                            onClick = { onPageTransitionChange(transition) },
+                            label = { Text(stringResource(label)) },
+                        )
+                    }
                 }
             }
 
@@ -209,8 +218,8 @@ fun ReaderSettingsSheet(
                 }
             }
 
-            // Ajustes especificos de EPUB
-            if (format == MangaFormat.EPUB) {
+            // Ajustes especificos de EPUB de texto
+            if (isTextEpub) {
                 Spacer(modifier = Modifier.height(20.dp))
                 HorizontalDivider()
                 Spacer(modifier = Modifier.height(20.dp))

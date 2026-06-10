@@ -27,7 +27,9 @@ import org.readium.r2.navigator.epub.css.FontStyle
 import org.readium.r2.navigator.epub.css.FontWeight
 import org.readium.r2.navigator.input.InputListener
 import org.readium.r2.navigator.input.TapEvent
+import org.readium.r2.navigator.preferences.ColumnCount
 import org.readium.r2.navigator.preferences.FontFamily
+import org.readium.r2.navigator.preferences.ReadingProgression
 import org.readium.r2.navigator.preferences.Theme
 import org.readium.r2.shared.ExperimentalReadiumApi
 import org.readium.r2.shared.publication.Publication
@@ -96,16 +98,8 @@ fun ReadiumReader(
         // Total de posiciones EPUB (estimación estable de Readium) y notificar
         onTotalPagesResolved?.invoke(allPositions.size)
 
-        val epubPreferences = EpubPreferences(
-            fontSize = epubFontSize / EPUB_FONT_SIZE_BASE,
-            fontFamily = if (epubFontFamily != "default") FontFamily(epubFontFamily) else null,
-            lineHeight = epubLineSpacing.toDouble(),
-            theme = when (epubTheme) {
-                ReaderTheme.LIGHT -> Theme.LIGHT
-                ReaderTheme.DARK -> Theme.DARK
-                ReaderTheme.SEPIA -> Theme.SEPIA
-                ReaderTheme.SYSTEM -> null
-            },
+        val epubPreferences = buildEpubPreferences(
+            epubFontSize, epubFontFamily, epubLineSpacing, epubTheme, readingDirection, pageLayout,
         )
 
         // Configurar fuentes personalizadas
@@ -238,21 +232,14 @@ fun ReadiumReader(
     }
 
     // Actualizar preferencias EPUB en tiempo real cuando el usuario las modifica
-    LaunchedEffect(epubFontSize, epubFontFamily, epubLineSpacing, epubTheme) {
+    LaunchedEffect(epubFontSize, epubFontFamily, epubLineSpacing, epubTheme, readingDirection, pageLayout) {
         val fragment = fragmentManager.findFragmentByTag(FRAGMENT_TAG)
         if (fragment is EpubNavigatorFragment) {
-            val updatedPreferences = EpubPreferences(
-                fontSize = epubFontSize / EPUB_FONT_SIZE_BASE,
-                fontFamily = if (epubFontFamily != "default") FontFamily(epubFontFamily) else null,
-                lineHeight = epubLineSpacing.toDouble(),
-                theme = when (epubTheme) {
-                    ReaderTheme.LIGHT -> Theme.LIGHT
-                    ReaderTheme.DARK -> Theme.DARK
-                    ReaderTheme.SEPIA -> Theme.SEPIA
-                    ReaderTheme.SYSTEM -> null
-                },
+            fragment.submitPreferences(
+                buildEpubPreferences(
+                    epubFontSize, epubFontFamily, epubLineSpacing, epubTheme, readingDirection, pageLayout,
+                ),
             )
-            fragment.submitPreferences(updatedPreferences)
         }
     }
 
@@ -265,3 +252,35 @@ fun ReadiumReader(
         }
     }
 }
+
+/**
+ * Construye las preferencias de Readium a partir de los ajustes del lector. Además de la
+ * tipografía, mapea la dirección de lectura (RTL / scroll vertical) y la disposición de
+ * página (columnas) para que esos ajustes también tengan efecto en EPUB de texto.
+ */
+@OptIn(ExperimentalReadiumApi::class)
+private fun buildEpubPreferences(
+    fontSize: Float,
+    fontFamily: String,
+    lineSpacing: Float,
+    theme: ReaderTheme,
+    readingDirection: ReadingDirection,
+    pageLayout: PageLayout,
+): EpubPreferences = EpubPreferences(
+    fontSize = fontSize / EPUB_FONT_SIZE_BASE,
+    fontFamily = if (fontFamily != "default") FontFamily(fontFamily) else null,
+    lineHeight = lineSpacing.toDouble(),
+    theme = when (theme) {
+        ReaderTheme.LIGHT -> Theme.LIGHT
+        ReaderTheme.DARK -> Theme.DARK
+        ReaderTheme.SEPIA -> Theme.SEPIA
+        ReaderTheme.SYSTEM -> null
+    },
+    scroll = readingDirection == ReadingDirection.VERTICAL || readingDirection == ReadingDirection.WEBTOON,
+    readingProgression = if (readingDirection == ReadingDirection.RIGHT_TO_LEFT) {
+        ReadingProgression.RTL
+    } else {
+        ReadingProgression.LTR
+    },
+    columnCount = if (pageLayout == PageLayout.DOUBLE) ColumnCount.TWO else ColumnCount.AUTO,
+)

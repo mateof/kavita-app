@@ -31,8 +31,8 @@ import com.kavita.core.ui.components.LoadingIndicator
 import com.kavita.core.ui.components.ErrorScreen
 import com.kavita.feature.reader.comic.ComicReader
 import com.kavita.feature.reader.pdf.PdfPageReader
-import com.kavita.feature.reader.readium.EpubImageReader
 import com.kavita.feature.reader.readium.ReadiumReader
+import com.kavita.feature.reader.readium.rememberEpubPageModel
 import com.kavita.feature.reader.overlay.BrightnessOverlay
 import com.kavita.feature.reader.overlay.ReaderControls
 import com.kavita.feature.reader.overlay.ReaderSettingsSheet
@@ -100,14 +100,21 @@ fun ReaderScreen(
                         val publication = viewModel.publication
                         if (publication != null && uiState.publicationReady) {
                             if (uiState.epubIsImageBased) {
-                                EpubImageReader(
-                                    publication = publication,
+                                // EPUB de imágenes/cómic: se lee con el ComicReader (dirección,
+                                // doble página, transición, zoom...), extrayendo cada imagen del EPUB.
+                                val readingOrder = remember(publication) { publication.readingOrder }
+                                ComicReader(
+                                    totalPages = readingOrder.size,
                                     currentPage = uiState.currentPage,
                                     readingDirection = preferences.defaultReadingDirection,
+                                    pageLayout = preferences.pageLayout,
                                     pageScaleType = preferences.pageScaleType,
+                                    pageTransition = preferences.pageTransition,
                                     tapNavigation = preferences.tapNavigation,
+                                    pageModel = { index ->
+                                        rememberEpubPageModel(publication, readingOrder[index])
+                                    },
                                     onPageChanged = viewModel::onPageChanged,
-                                    onTotalPagesResolved = viewModel::onTotalPagesResolved,
                                     onTapCenter = viewModel::toggleControls,
                                 )
                             } else {
@@ -141,7 +148,7 @@ fun ReaderScreen(
                             pageScaleType = preferences.pageScaleType,
                             pageTransition = preferences.pageTransition,
                             tapNavigation = preferences.tapNavigation,
-                            getPageImageUrl = viewModel::getPageImageUrl,
+                            pageModel = { index -> viewModel.getPageImageUrl(index) },
                             onPageChanged = viewModel::onPageChanged,
                             onTapCenter = viewModel::toggleControls,
                             pageUrls = uiState.pageUrls,
@@ -190,6 +197,7 @@ fun ReaderScreen(
                     pageTransition = preferences.pageTransition,
                     tapNavigation = preferences.tapNavigation,
                     format = uiState.format,
+                    epubIsImageBased = uiState.epubIsImageBased,
                     pdfNightMode = preferences.pdfNightMode,
                     epubFontSize = preferences.epubFontSize,
                     epubFontFamily = preferences.epubFontFamily,

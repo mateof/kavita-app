@@ -38,7 +38,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.readium.r2.shared.ExperimentalReadiumApi
 import org.readium.r2.shared.publication.Publication
+import org.readium.r2.shared.publication.indexOfFirstWithHref
+import org.readium.r2.shared.publication.services.positionsByReadingOrder
+import org.readium.r2.shared.util.Url
 import java.io.File
 import javax.inject.Inject
 
@@ -217,11 +221,16 @@ class ReaderViewModel @Inject constructor(
                             publication = pub
                             val toc = extractToc(pub)
                             val imageBased = try { pub.isImageBasedEpub() } catch (_: Exception) { false }
+                            // Para EPUB de imágenes el total de páginas es el reading order.
+                            val imageTotalPages = if (imageBased) pub.readingOrder.size else 0
                             _uiState.update {
+                                val maxPage = (imageTotalPages - 1).coerceAtLeast(0)
                                 it.copy(
                                     pdfFile = targetFile,
                                     publicationReady = true,
                                     epubIsImageBased = imageBased,
+                                    totalPages = if (imageBased) imageTotalPages else it.totalPages,
+                                    currentPage = if (imageBased) it.currentPage.coerceIn(0, maxPage) else it.currentPage,
                                     tableOfContents = toc,
                                 )
                             }
@@ -436,10 +445,23 @@ class ReaderViewModel @Inject constructor(
         return result
     }
 
+    @OptIn(ExperimentalReadiumApi::class)
     fun navigateToTocEntry(entry: TocEntry) {
+        val pub = publication ?: return
         viewModelScope.launch {
             _uiState.update { it.copy(showControls = false) }
-            _events.emit(ReaderEvent.NavigateToToc(entry.href))
+            // Resolver el href del índice a un recurso del reading order.
+            val url = Url(entry.href.substringBefore('#')) ?: return@launch
+            val index = pub.readingOrder.indexOfFirstWithHref(url) ?: return@launch
+            val target = if (_uiState.value.epubIsImageBased) {
+                // Lector de imágenes: la página es el índice en el reading order.
+                index
+            } else {
+                // Readium texto: primera posición global (1-based) de ese recurso.
+                val positions = pub.positionsByReadingOrder()
+                positions.take(index).sumOf { it.size } + 1
+            }
+            onPageChanged(target)
         }
     }
 
