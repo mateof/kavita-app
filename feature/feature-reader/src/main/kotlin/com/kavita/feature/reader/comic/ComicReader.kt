@@ -18,9 +18,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.util.lerp
 import coil.compose.AsyncImage
@@ -205,47 +207,21 @@ private fun HorizontalPagedReader(
         beyondViewportPageCount = 3,
         modifier = Modifier.fillMaxSize(),
     ) { page ->
+        // Un único manejador de tap (navegación/centro). El doble-tap de zoom lo gestiona
+        // ZoomablePageImage en el mismo detector para que no compitan dos detectores.
+        val onTap: (Offset, IntSize) -> Unit = { offset, size ->
+            comicTap(
+                offset = offset,
+                size = size,
+                tapNavigation = tapNavigation,
+                onPrev = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
+                onNext = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
+                onCenter = onTapCenter,
+            )
+        }
         val pageModifier = Modifier
             .fillMaxSize()
             .pageTransitionEffect(pagerState, page, pageTransition)
-            .pointerInput(tapNavigation) {
-                detectTapGestures { offset ->
-                    val width = size.width
-                    val height = size.height
-                    when (tapNavigation) {
-                        TapNavigation.LATERAL -> {
-                            val zone = width / 3
-                            when {
-                                offset.x < zone -> scope.launch {
-                                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                                }
-                                offset.x > width - zone -> scope.launch {
-                                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                                }
-                                else -> onTapCenter()
-                            }
-                        }
-                        TapNavigation.VERTICAL -> {
-                            val zone = height / 3
-                            when {
-                                offset.y < zone -> scope.launch {
-                                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                                }
-                                offset.y > height - zone -> scope.launch {
-                                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                                }
-                                else -> onTapCenter()
-                            }
-                        }
-                        TapNavigation.NONE -> {
-                            val zone = width / 3
-                            if (offset.x > zone && offset.x < width - zone) {
-                                onTapCenter()
-                            }
-                        }
-                    }
-                }
-            }
 
         if (isDouble) {
             DoublePageContent(
@@ -253,6 +229,7 @@ private fun HorizontalPagedReader(
                 totalPages = totalPages,
                 pageScaleType = pageScaleType,
                 pageModel = pageModel,
+                onTap = onTap,
                 modifier = pageModifier,
             )
         } else {
@@ -260,6 +237,7 @@ private fun HorizontalPagedReader(
                 pageIndex = page,
                 pageScaleType = pageScaleType,
                 pageModel = pageModel,
+                onTap = onTap,
                 modifier = pageModifier,
             )
         }
@@ -303,47 +281,19 @@ private fun VerticalPagedReader(
         beyondViewportPageCount = 3,
         modifier = Modifier.fillMaxSize(),
     ) { page ->
+        val onTap: (Offset, IntSize) -> Unit = { offset, size ->
+            comicTap(
+                offset = offset,
+                size = size,
+                tapNavigation = tapNavigation,
+                onPrev = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
+                onNext = { scope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) } },
+                onCenter = onTapCenter,
+            )
+        }
         val pageModifier = Modifier
             .fillMaxSize()
             .verticalPageTransitionEffect(pagerState, page, pageTransition)
-            .pointerInput(tapNavigation) {
-                detectTapGestures { offset ->
-                    val width = size.width
-                    val height = size.height
-                    when (tapNavigation) {
-                        TapNavigation.LATERAL -> {
-                            val zone = width / 3
-                            when {
-                                offset.x < zone -> scope.launch {
-                                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                                }
-                                offset.x > width - zone -> scope.launch {
-                                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                                }
-                                else -> onTapCenter()
-                            }
-                        }
-                        TapNavigation.VERTICAL -> {
-                            val zone = height / 3
-                            when {
-                                offset.y < zone -> scope.launch {
-                                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                                }
-                                offset.y > height - zone -> scope.launch {
-                                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
-                                }
-                                else -> onTapCenter()
-                            }
-                        }
-                        TapNavigation.NONE -> {
-                            val zone = height / 3
-                            if (offset.y > zone && offset.y < height - zone) {
-                                onTapCenter()
-                            }
-                        }
-                    }
-                }
-            }
 
         if (isDouble) {
             DoublePageContent(
@@ -351,6 +301,7 @@ private fun VerticalPagedReader(
                 totalPages = totalPages,
                 pageScaleType = pageScaleType,
                 pageModel = pageModel,
+                onTap = onTap,
                 modifier = pageModifier,
             )
         } else {
@@ -358,6 +309,7 @@ private fun VerticalPagedReader(
                 pageIndex = page,
                 pageScaleType = pageScaleType,
                 pageModel = pageModel,
+                onTap = onTap,
                 modifier = pageModifier,
             )
         }
@@ -369,14 +321,50 @@ private fun SinglePageContent(
     pageIndex: Int,
     pageScaleType: PageScaleType,
     pageModel: @Composable (Int) -> Any?,
+    onTap: (Offset, IntSize) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ZoomablePageImage(
         model = pageModel(pageIndex),
         contentDescription = "Pagina ${pageIndex + 1}",
         contentScale = pageScaleType.toContentScale(),
+        onTap = onTap,
         modifier = modifier,
     )
+}
+
+private fun comicTap(
+    offset: Offset,
+    size: IntSize,
+    tapNavigation: TapNavigation,
+    onPrev: () -> Unit,
+    onNext: () -> Unit,
+    onCenter: () -> Unit,
+) {
+    val width = size.width
+    val height = size.height
+    when (tapNavigation) {
+        TapNavigation.LATERAL -> {
+            val zone = width / 3
+            when {
+                offset.x < zone -> onPrev()
+                offset.x > width - zone -> onNext()
+                else -> onCenter()
+            }
+        }
+        TapNavigation.VERTICAL -> {
+            val zone = height / 3
+            when {
+                offset.y < zone -> onPrev()
+                offset.y > height - zone -> onNext()
+                else -> onCenter()
+            }
+        }
+        TapNavigation.NONE -> {
+            val zone = width / 3
+            if (offset.x > zone && offset.x < width - zone) onCenter()
+        }
+    }
 }
 
 @Composable
@@ -385,13 +373,18 @@ private fun DoublePageContent(
     totalPages: Int,
     pageScaleType: PageScaleType,
     pageModel: @Composable (Int) -> Any?,
+    onTap: (Offset, IntSize) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val leftPage = spreadIndex * 2
     val rightPage = leftPage + 1
     val scale = pageScaleType.toContentScale()
 
-    Row(modifier = modifier) {
+    Row(
+        modifier = modifier.pointerInput(onTap) {
+            detectTapGestures { offset -> onTap(offset, size) }
+        },
+    ) {
         AsyncImage(
             model = pageModel(leftPage),
             contentDescription = "Pagina ${leftPage + 1}",
